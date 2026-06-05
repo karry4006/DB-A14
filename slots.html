@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔位查詢 - 現代化靈骨塔管理系統</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .filter-section {
+            padding: 2rem 5%;
+            background: #fff;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .result-section {
+            padding: 0;
+        }
+        .slot-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .slot-table th, .slot-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .slot-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">園區靈骨塔管理系統</div>
+            <ul>
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="slots.html">塔位查詢</a></li>
+                <li><a href="auth.html">會員登入</a></li>
+                <li><a href="announcements.html">園區公告</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-wrapper">
+        <aside class="main-sidebar">
+            <h3>快速功能</h3>
+            <ul class="sidebar-nav">
+                <li><a href="slots.html">查詢空位 (訪客)</a></li>
+                <li><a href="auth.html">會員中心</a></li>
+                <li><a href="auth.html">數位參拜</a></li>
+                <li><a href="announcements.html">園區公告</a></li>
+            </ul>
+        </aside>
+
+        <main class="content-area">
+            <section class="filter-section">
+                <h2>空塔位查詢</h2>
+                <form id="searchSlotForm" style="margin-top: 1rem;">
+                    <label for="searchFloor">樓層：</label>
+                    <select id="searchFloor" name="floor" style="padding: 6px; margin-right: 15px;">
+                        <option value="">全樓層</option>
+                        <option value="1">1樓</option>
+                        <option value="2">2樓</option>
+                        <option value="3">3樓</option>
+                    </select>
+
+                    <label for="searchBudget">預算區間：</label>
+                    <input type="number" id="searchBudget" name="budget" placeholder="最高預算" style="padding: 6px; margin-right: 15px;">
+
+                    <button type="submit" class="btn btn-primary" style="margin: 0; padding: 6px 15px;">搜尋</button>
+                </form>
+            </section>
+
+            <section class="result-section">
+                <table class="slot-table">
+                    <thead>
+                        <tr>
+                            <th>塔位編號</th>
+                            <th>樓層</th>
+                            <th>區位</th>
+                            <th>櫃位</th>
+                            <th>價格</th>
+                            <th>狀態</th>
+                            <th>已故親友</th>
+                        </tr>
+                    </thead>
+                    <tbody id="slotResults">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">請輸入條件進行搜尋</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>園區公告 - 現代化靈骨塔管理系統</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            color: var(--secondary-color);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        .page-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        .ann-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .ann-item {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">園區靈骨塔管理系統</div>
+            <ul>
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="slots.html">塔位查詢</a></li>
+                <li><a href="auth.html">會員登入</a></li>
+                <li><a href="announcements.html">園區公告</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-wrapper">
+        <aside class="main-sidebar">
+            <h3>快速功能</h3>
+            <ul class="sidebar-nav">
+                <li><a href="slots.html">查詢空位 (訪客)</a></li>
+                <li><a href="auth.html">會員中心</a></li>
+                <li><a href="auth.html">數位參拜</a></li>
+                <li><a href="announcements.html">園區公告</a></li>
+            </ul>
+        </aside>
+
+        <main class="content-area">
+            <div class="page-header">
+                <h1>園區最新公告</h1>
+                <p style="color: #666; margin-top: 5px;">掌握園區動態、祭祀規範與活動通知</p>
+            </div>
+
+            <div class="ann-list" id="announcementListContainer">
+                <div style="text-align: center; padding: 3rem; background: #fff; border-radius: 8px;">
+                    <h3 style="color: var(--secondary-color); margin-bottom: 10px;">公告載入中...</h3>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

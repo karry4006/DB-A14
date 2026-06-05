@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理員後台 - 現代化靈骨塔管理系統</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+        .admin-sidebar {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 2rem 1rem;
+        }
+        .admin-sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #777;
+            padding-bottom: 1rem;
+        }
+        .admin-nav {
+            list-style: none;
+        }
+        .admin-nav li {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .admin-nav li:hover, .admin-nav li.active {
+            background-color: var(--primary-color);
+        }
+        .admin-main {
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+        .mgmt-section {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        .mgmt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        .stats-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-color);
+            text-align: center;
+        }
+        .stats-card h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .stats-card .number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .admin-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <h2>管理員控制台</h2>
+            <ul class="admin-nav">
+                <li class="active" data-target="dashboardSection">營運儀表板</li>
+                <li data-target="announcementSection">發佈園區公告</li>
+                <li data-target="reservationSection">預約紀錄總表</li>
+            </ul>
+            <div style="margin-top: 5rem; text-align: center; font-size: 14px;">
+                <p>目前管理員：<br><span id="currentAdminName" style="font-weight: bold; color: var(--primary-color);">驗證中</span></p>
+                <button id="adminLogoutBtn" class="btn" style="background: #cc0000; color: #fff; margin-top: 10px; padding: 5px 15px;">安全登出</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            
+            <div id="dashboardSection" class="content-section">
+                <div class="mgmt-header">
+                    <h2>系統營運摘要數據</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stats-card"><h3>總塔位配置數</h3><div class="number" id="statsTotalSlots">0</div></div>
+                    <div class="stats-card"><h3>現存空置塔位</h3><div class="number" id="statsEmptySlots">0</div></div>
+                    <div class="stats-card"><h3>今日預約祭拜人流</h3><div class="number" id="statsTodayReservations">0</div></div>
+                    <div class="stats-card"><h3>未清償管理費帳單</h3><div class="number" id="statsUnpaidBills">0</div></div>
+                </div>
+
+                <section class="mgmt-section">
+                    <div class="mgmt-header">
+                        <h2>塔位配置與狀態異動管理 (UC-04)</h2>
+                    </div>
+                    <form id="updateSlotForm" style="display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+                        <div>
+                            <label style="font-weight: bold;">欲修改的塔位系統編號 (Slot ID)：</label>
+                            <input type="number" id="editSlotId" placeholder="請輸入實體塔位代碼" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold;">變更目標狀態：</label>
+                            <select id="editSlotStatus" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                                <option value="空置">空置 (開放家屬搜尋與認購)</option>
+                                <option value="已售">已售 (已被特定會員綁定)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: fit-content; padding: 10px 20px;">更新進駐狀態</button>
+                    </form>\n                </section>
+            </div>
+
+            <div id="announcementSection" class="content-section" style="display: none;">
+                <section class="mgmt-section">
+                    <div class="mgmt-header">
+                        <h2>發佈全新園區公告 (UC-10)</h2>
+                    </div>
+                    <form id="postAnnouncementForm" style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                            <div>
+                                <label style="font-weight: bold;">公告標題：</label>
+                                <input type="text" id="annTitle" placeholder="請輸入公告重要主旨" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                            </div>
+                            <div>
+                                <label style="font-weight: bold;">公告分類：</label>
+                                <select id="annCategory" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                                    <option value="園區公告">園區公告</option>
+                                    <option value="祭祀規範">祭祀規範</option>
+                                    <option value="活動通知">活動通知</option>\n                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-weight: bold;">公告詳細內文：</label>
+                            <textarea id="annContent" rows="6" placeholder="請輸入欲公告給訪客與會員查看的完整法規或園區異動消息..." required style="width: 100%; padding: 8px; margin-top: 5px; resize: vertical;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: fit-content; padding: 10px 20px;">發佈公告</button>
+                    </form>
+                </section>
+            </div>
+
+            <div id="reservationSection" class="content-section" style="display: none;">
+                <section class="mgmt-section">
+                    <div class="mgmt-header">
+                        <h2>預約紀錄總表 (多表聯合關聯查詢)</h2>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>預約編號</th> <th>預約會員身分</th>
+                                <th>目標塔位</th>
+                                <th>預約排程時間</th>
+                                <th>排他性配置車位</th>
+                                <th>當前狀態</th>
+                                <th>管理操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationTableBody">
+                            </tbody>
+                    </table>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

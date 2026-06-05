@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員後台 - 現代化靈骨塔管理系統</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 2rem 5%;
+        }
+        .sidebar {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            height: fit-content;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .sidebar li:hover {
+            color: var(--primary-color);
+        }
+        .content-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            min-height: 400px;
+        }
+        .data-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .data-list td, .data-list th {
+            padding: 12px;
+            border: 1px solid #eee;
+        }
+        .status-paid {
+            color: green;
+            font-weight: bold;
+        }
+        .status-unpaid {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">園區靈骨塔管理系統</div>
+            <ul>
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="slots.html">塔位查詢</a></li>
+                <li><a href="announcements.html">園區公告</a></li>
+                <li><a href="auth.html">登出</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <aside class="sidebar">
+            <h3 style="margin-bottom: 1rem;">歡迎，<span id="currentMemberName">會員</span></h3>
+            <ul id="memberNav">
+                <li class="active" data-target="memberSlotsSection">名下塔位與親友</li>
+                <li data-target="reserveSection">預約實體祭拜</li>
+                <li data-target="messageSection">線上追思留言</li>
+                <li data-target="memberBillsSection">管理費帳單</li>
+            </ul>
+        </aside>
+
+        <section class="content-card">
+            <div id="memberSlotsSection" class="content-section">
+                <h2>名下登記塔位</h2>
+                <table class="data-list">
+                    <thead>
+                        <tr>
+                            <th>塔位編號</th>
+                            <th>位置描述</th>
+                            <th>進駐先人姓名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberSlotsBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="reserveSection" class="content-section" style="display: none;">
+                <h2>預約實體祭拜排程</h2>
+                <form id="reserveForm" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">選擇名下塔位編號：</label>
+                        <input type="number" id="reserveSlotId" placeholder="例如: 101" required style="width: 100%; padding: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">預約祭拜日期：</label>\n                        <input type="date" id="reserveDate" required style="width: 100%; padding: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">預約時段：</label>
+                        <select id="reserveTime" required style="width: 100%; padding: 8px;">
+                            <option value="09:00:00">09:00 - 11:00</option>\n                            <option value="11:00:00">11:00 - 13:00</option>
+                            <option value="14:00:00">14:00 - 16:00</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">預計隨行人數：</label>
+                        <input type="number" id="reservePeople" min="1" value="1" required style="width: 100%; padding: 8px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: fit-content; margin-top: 10px;">提交排程預約</button>
+                </form>
+            </div>
+
+            <div id="messageSection" class="content-section" style="display: none;">
+                <h2>線上數位追思與留言</h2>
+                <form id="messageForm" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">先人編號 (Deceased ID)：</label>
+                        <input type="number" id="msgDeceasedId" placeholder="請輸入先人系統代碼" required style="width: 100%; padding: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">虛擬祭品：</label>
+                        <select id="msgItem" required style="width: 100%; padding: 8px;">
+                            <option value="鮮花">鮮花</option>
+                            <option value="蠟燭">蠟燭</option>
+                            <option value="水果">水果</option>\n                            <option value="無">無</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px;">留言內容：</label>
+                        <textarea id="msgContent" rows="4" placeholder="請輸入您對先人的思念寄語..." required style="width: 100%; padding: 8px; resize: vertical;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: fit-content; margin-top: 10px;">送出追思</button>
+                </form>
+            </div>
+
+            <div id="memberBillsSection" class="content-section" style="display: none;">
+                <h2>管理費應繳帳單總額</h2>
+                <table class="data-list">
+                    <thead>
+                        <tr>
+                            <th>費用年度</th>
+                            <th>應繳應付金額</th>
+                            <th>繳費截止日期</th>
+                            <th>目前帳務狀態</th>
+                            <th>線上沖銷作業</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberBillsBody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
