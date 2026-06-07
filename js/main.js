@@ -103,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (publicRegisterForm) {
         publicRegisterForm.addEventListener("submit", (e) => {
             e.preventDefault();
+            // 依據 A14 API 規格表，註冊傳入的 Key 為 id_number
             const payload = {
                 account: document.getElementById("regAccount").value,
                 password: document.getElementById("regPassword").value,
@@ -137,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const account = document.getElementById("loginAccount").value;
             const password = document.getElementById("loginPassword").value;
 
+            // 呼叫登入 API
             fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -202,12 +204,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if(reserveForm) {
             reserveForm.addEventListener("submit", (e) => {
                 e.preventDefault();
+                // 依據 A14 API 規格表，人數參數名為 people_count
                 const payload = {
                     user_id: parseInt(userId),
                     slot_id: parseInt(document.getElementById("reserveSlotId").value),
                     reserve_date: document.getElementById("reserveDate").value,
                     time_slot: document.getElementById("reserveTime").value,
-                    amount_of_people: parseInt(document.getElementById("reservePeople").value)
+                    people_count: parseInt(document.getElementById("reservePeople").value)
                 };
 
                 fetch(`${API_BASE_URL}/reservations`, {
@@ -256,8 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch(err => {
                     console.error(err);
-                    alert("留言失敗：無法傳輸資料，請確認後端服務。");
-                    messageForm.reset();
+                    alert("留言失敗：請確認是否已選擇親友對象。");
                 });
             });
         }
@@ -268,7 +270,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // 獲取名下塔位與親友 (UC-07)
 function loadMemberSlots(userId) {
     const tbody = document.getElementById("memberSlotsBody");
-    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">安全憑證驗證與讀取中...</td></tr>`;
+    const deceasedSelect = document.getElementById("msgDeceasedId");
+    
+    if (tbody) tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">安全憑證驗證與讀取中...</td></tr>`;
     
     fetch(`${API_BASE_URL}/users/${userId}/slots`)
         .then(res => {
@@ -276,24 +280,39 @@ function loadMemberSlots(userId) {
             return res.json();
         })
         .then(data => {
-            tbody.innerHTML = "";
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">經查關聯資料表，您名下目前無登記塔位。</td></tr>`;
-                return;
+            // 處理塔位表格
+            if (tbody) {
+                tbody.innerHTML = "";
+                if(!data.slots || data.slots.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">經查關聯資料表，您名下目前無登記塔位。</td></tr>`;
+                } else {
+                    data.slots.forEach(item => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${item.slot_id}</td>
+                                <td>${item.floor}樓 ${item.zone}區 ${item.cabinet}號</td>
+                                <td>${item.deceased_name ? item.deceased_name : '未進駐'}</td>
+                            </tr>
+                        `;
+                    });
+                }
             }
-            data.forEach(item => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${item.slot_id}</td>
-                        <td>${item.floor}樓 ${item.zone}區 ${item.cabinet}號</td>
-                        <td>${item.deceased_name ? item.deceased_name : '未進駐'}</td>
-                    </tr>
-                `;
-            });
+
+            // 處理親友下拉選單
+            if (deceasedSelect) {
+                deceasedSelect.innerHTML = `<option value="">請選擇追思對象...</option>`;
+                if (data.deceased && data.deceased.length > 0) {
+                    data.deceased.forEach(person => {
+                        deceasedSelect.innerHTML += `<option value="${person.deceased_id}">${person.name}</option>`;
+                    });
+                } else {
+                    deceasedSelect.innerHTML = `<option value="">尚無進駐親友資料</option>`;
+                }
+            }
         })
         .catch(err => {
             console.error(err);
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">通訊中斷：無法載入名下資料。</td></tr>`;
+            if(tbody) tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">通訊中斷：無法載入名下資料。</td></tr>`;
         });
 }
 
@@ -310,7 +329,7 @@ function loadMemberBills(userId) {
         .then(data => {
             tbody.innerHTML = "";
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">目前無未清償或应繳之管理費帳單。</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">目前無未清償或應繳之管理費帳單。</td></tr>`;
                 return;
             }
             data.forEach(bill => {
@@ -320,7 +339,7 @@ function loadMemberBills(userId) {
                         <td>$${bill.amount.toLocaleString()}</td>
                         <td>${bill.due_date}</td>
                         <td><span class="badge">${bill.status}</span></td>
-                        <td>${bill.status === '未繳費' ? '<button style="cursor:pointer; font-weight:bold;">線上核銷</button>' : '已沖銷'}</td>
+                        <td>${bill.status === '未繳' ? '<button style="cursor:pointer; font-weight:bold;">線上核銷</button>' : '已沖銷'}</td>
                     </tr>
                 `;
             });

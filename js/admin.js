@@ -1,50 +1,15 @@
 // js/admin.js
 document.addEventListener("DOMContentLoaded", () => {
-    // 設定後端 API 的基礎 URL
     const API_BASE_URL = 'http://localhost:5000';
 
     /* -------------------------------------------------------------
-       1. 處理管理員登入 (admin_login.html)
-    ------------------------------------------------------------- */
-    const loginForm = document.getElementById("adminLoginForm");
-    if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const account = document.getElementById("adminAccount").value;
-            const password = document.getElementById("adminPassword").value;
-
-            fetch(`${API_BASE_URL}/admin/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ account, password })
-            })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error("認證失敗");
-                }
-                return res.json();
-            })
-            .then(data => {
-                localStorage.setItem("adminUser", data.admin_name || "系統管理員");
-                alert("登入成功！跳轉至管理後台...");
-                window.location.href = "admin.html";
-            })
-            .catch(err => {
-                console.error(err);
-                alert("登入失敗：管理員帳號或密碼錯誤。");
-            });
-        });
-    }
-
-    /* -------------------------------------------------------------
-       2. 處理管理員後台介面 (admin.html)
+       1. 處理管理員後台介面 (admin.html)
     ------------------------------------------------------------- */
     if (window.location.pathname.endsWith("admin.html")) {
-        // 檢查登入狀態
         const currentAdmin = localStorage.getItem("adminUser");
         if (!currentAdmin) {
             alert("安全性拒絕：請先登入系統。");
-            window.location.href = "admin_login.html";
+            window.location.href = "auth.html";
             return;
         }
         document.getElementById("currentAdminName").innerText = currentAdmin;
@@ -54,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             localStorage.removeItem("adminUser");
             alert("您已安全登出系統。");
-            window.location.href = "admin_login.html";
+            window.location.href = "auth.html";
         });
 
         // 側邊欄選單切換
@@ -114,11 +79,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.preventDefault();
                 const slotId = document.getElementById("editSlotId").value;
                 const status = document.getElementById("editSlotStatus").value;
+                const ownerId = document.getElementById("editSlotOwnerId").value;
+
+                let payload = { status: status };
+                if (ownerId) payload.owner_user_id = parseInt(ownerId);
 
                 fetch(`${API_BASE_URL}/slots/${slotId}`, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: status })
+                    body: JSON.stringify(payload)
                 })
                 .then(res => {
                     if (!res.ok) throw new Error("更新失敗");
@@ -135,7 +104,49 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // 刪除/取消預約紀錄 (CRUD 刪除操作)
+        // 修改會員資料表單提交 (UC-09)
+        const editUserForm = document.getElementById("editUserForm");
+        if (editUserForm) {
+            editUserForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const userId = document.getElementById("editUserId").value;
+                const name = document.getElementById("editUserName").value;
+                const phone = document.getElementById("editUserPhone").value;
+
+                let payload = {};
+                if (name) payload.name = name;
+                if (phone) payload.phone_number = phone;
+
+                fetch(`${API_BASE_URL}/users/${userId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("更新家屬資料失敗");
+                    return res.json();
+                })
+                .then(data => {
+                    alert(`會員 ${userId} 的資料已成功更新！`);
+                    editUserForm.reset();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("更新失敗：請確認後端端點與權限設定。");
+                });
+            });
+        }
+
+        // UC-08 預約篩選表單提交
+        const filterResForm = document.getElementById("filterReservationForm");
+        if (filterResForm) {
+            filterResForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                fetchReservations();
+            });
+        }
+
+        // 刪除/取消預約紀錄
         const reservationTableBody = document.getElementById("reservationTableBody");
         if (reservationTableBody) {
             reservationTableBody.addEventListener("click", (e) => {
@@ -172,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // 獲取儀表板統計數據
 function fetchStats() {
     const API_BASE_URL = 'http://localhost:5000';
-    
     fetch(`${API_BASE_URL}/api/admin/stats`)
         .then(res => {
             if (!res.ok) throw new Error("讀取統計失敗");
@@ -184,22 +194,25 @@ function fetchStats() {
             document.getElementById("statsTodayReservations").innerText = data.today_reservations;
             document.getElementById("statsUnpaidBills").innerText = data.unpaid_bills;
         })
-        .catch(err => {
-            console.error(err);
-            document.getElementById("statsTotalSlots").innerText = "NaN";
-            document.getElementById("statsEmptySlots").innerText = "NaN";
-            document.getElementById("statsTodayReservations").innerText = "NaN";
-            document.getElementById("statsUnpaidBills").innerText = "NaN";
-        });
+        .catch(err => console.error(err));
 }
 
-// 獲取預約總表
+// 獲取預約總表 (UC-08 包含篩選邏輯)
 function fetchReservations() {
     const API_BASE_URL = 'http://localhost:5000';
     const tbody = document.getElementById("reservationTableBody");
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">安全資料傳輸中...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">資料檢索中...</td></tr>`;
 
-    fetch(`${API_BASE_URL}/reservations`)
+    // 抓取篩選參數
+    const startDate = document.getElementById("resStartDate")?.value;
+    const endDate = document.getElementById("resEndDate")?.value;
+    const status = document.getElementById("resStatus")?.value;
+
+    const queryParams = new URLSearchParams();
+    if (startDate && endDate) queryParams.append('date_range', `${startDate},${endDate}`);
+    if (status) queryParams.append('reservation_status', status);
+
+    fetch(`${API_BASE_URL}/reservations?${queryParams.toString()}`)
         .then(res => {
             if (!res.ok) throw new Error("獲取列表失敗");
             return res.json();
@@ -207,21 +220,21 @@ function fetchReservations() {
         .then(data => {
             tbody.innerHTML = "";
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">目前系統中無任何預約紀錄</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">指定條件下無預約紀錄</td></tr>`;
                 return;
             }
             data.forEach(resItem => {
                 tbody.innerHTML += `
                     <tr>
-                        <td>${resItem.reserve_id}</td>
-                        <td>${resItem.user_name} (ID: ${resItem.user_id})</td>
+                        <td>${resItem.id || resItem.reserve_id}</td>
+                        <td>${resItem.user || resItem.user_name} (ID: ${resItem.user_id})</td>
                         <td>${resItem.slot_id}</td>
                         <td>${resItem.reserve_date} ${resItem.time_slot}</td>
                         <td>${resItem.parking_spot_id ? resItem.parking_spot_id + ' 號' : '無車位'}</td>
                         <td><span class="status-badge">${resItem.status}</span></td>
                         <td>
-                            <button class="btn-delete-reserve" data-id="${resItem.reserve_id}" style="color:red; cursor:pointer; background:none; border:none; font-weight:bold;">
-                                刪除紀錄
+                            <button class="btn-delete-reserve" data-id="${resItem.id || resItem.reserve_id}" style="color:red; cursor:pointer; background:none; border:none; font-weight:bold;">
+                                取消紀錄
                             </button>
                         </td>
                     </tr>

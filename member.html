@@ -103,12 +103,14 @@
                         <input type="number" id="reserveSlotId" placeholder="例如: 101" required style="width: 100%; padding: 8px;">
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 5px;">預約祭拜日期：</label>\n                        <input type="date" id="reserveDate" required style="width: 100%; padding: 8px;">
+                        <label style="display: block; margin-bottom: 5px;">預約祭拜日期：</label>
+                        <input type="date" id="reserveDate" required style="width: 100%; padding: 8px;">
                     </div>
                     <div>
                         <label style="display: block; margin-bottom: 5px;">預約時段：</label>
                         <select id="reserveTime" required style="width: 100%; padding: 8px;">
-                            <option value="09:00:00">09:00 - 11:00</option>\n                            <option value="11:00:00">11:00 - 13:00</option>
+                            <option value="09:00:00">09:00 - 11:00</option>
+                            <option value="11:00:00">11:00 - 13:00</option>
                             <option value="14:00:00">14:00 - 16:00</option>
                         </select>
                     </div>
@@ -124,15 +126,18 @@
                 <h2>線上數位追思與留言</h2>
                 <form id="messageForm" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
                     <div>
-                        <label style="display: block; margin-bottom: 5px;">先人編號 (Deceased ID)：</label>
-                        <input type="number" id="msgDeceasedId" placeholder="請輸入先人系統代碼" required style="width: 100%; padding: 8px;">
+                        <label style="display: block; margin-bottom: 5px;">追思對象 (已故親友)：</label>
+                        <select id="msgDeceasedId" required style="width: 100%; padding: 8px;">
+                            <option value="">載入親友資料中...</option>
+                        </select>
                     </div>
                     <div>
                         <label style="display: block; margin-bottom: 5px;">虛擬祭品：</label>
                         <select id="msgItem" required style="width: 100%; padding: 8px;">
                             <option value="鮮花">鮮花</option>
                             <option value="蠟燭">蠟燭</option>
-                            <option value="水果">水果</option>\n                            <option value="無">無</option>
+                            <option value="水果">水果</option>
+                            <option value="無">無</option>
                         </select>
                     </div>
                     <div>

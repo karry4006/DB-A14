@@ -101,6 +101,7 @@
             <h2>管理員控制台</h2>
             <ul class="admin-nav">
                 <li class="active" data-target="dashboardSection">營運儀表板</li>
+                <li data-target="userSection">會員資料管理</li>
                 <li data-target="announcementSection">發佈園區公告</li>
                 <li data-target="reservationSection">預約紀錄總表</li>
             </ul>
@@ -139,8 +140,36 @@
                                 <option value="已售">已售 (已被特定會員綁定)</option>
                             </select>
                         </div>
+                        <div>
+                            <label style="font-weight: bold;">擁有者會員編號 (若設為已售需填寫)：</label>
+                            <input type="number" id="editSlotOwnerId" placeholder="User ID" style="width: 100%; padding: 8px; margin-top: 5px;">
+                        </div>
                         <button type="submit" class="btn btn-primary" style="width: fit-content; padding: 10px 20px;">更新進駐狀態</button>
-                    </form>\n                </section>
+                    </form>
+                </section>
+            </div>
+
+            <div id="userSection" class="content-section" style="display: none;">
+                <section class="mgmt-section">
+                    <div class="mgmt-header">
+                        <h2>會員家屬資料管理 (UC-09)</h2>
+                    </div>
+                    <form id="editUserForm" style="display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+                        <div>
+                            <label style="font-weight: bold;">欲修改的會員系統編號 (User ID)：</label>
+                            <input type="number" id="editUserId" placeholder="請輸入會員代碼" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold;">更新姓名：</label>
+                            <input type="text" id="editUserName" placeholder="留白則不修改" style="width: 100%; padding: 8px; margin-top: 5px;">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold;">更新聯絡電話：</label>
+                            <input type="text" id="editUserPhone" placeholder="留白則不修改" style="width: 100%; padding: 8px; margin-top: 5px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: fit-content; padding: 10px 20px;">更新家屬資料</button>
+                    </form>
+                </section>
             </div>
 
             <div id="announcementSection" class="content-section" style="display: none;">
@@ -159,7 +188,8 @@
                                 <select id="annCategory" required style="width: 100%; padding: 8px; margin-top: 5px;">
                                     <option value="園區公告">園區公告</option>
                                     <option value="祭祀規範">祭祀規範</option>
-                                    <option value="活動通知">活動通知</option>\n                                </select>
+                                    <option value="活動通知">活動通知</option>
+                                </select>
                             </div>
                         </div>
                         <div>
@@ -174,21 +204,43 @@
             <div id="reservationSection" class="content-section" style="display: none;">
                 <section class="mgmt-section">
                     <div class="mgmt-header">
-                        <h2>預約紀錄總表 (多表聯合關聯查詢)</h2>
+                        <h2>預約紀錄總表 (UC-08)</h2>
                     </div>
+                    
+                    <form id="filterReservationForm" style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #f4f4f4; padding: 15px; border-radius: 8px;">
+                        <div>
+                            <label style="font-weight: bold; margin-right: 5px;">開始日期:</label>
+                            <input type="date" id="resStartDate" style="padding: 6px;">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold; margin-right: 5px;">結束日期:</label>
+                            <input type="date" id="resEndDate" style="padding: 6px;">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold; margin-right: 5px;">預約狀態:</label>
+                            <select id="resStatus" style="padding: 6px;">
+                                <option value="">所有狀態</option>
+                                <option value="已確認">已確認</option>
+                                <option value="已完成">已完成</option>
+                                <option value="已取消">已取消</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin: 0; padding: 6px 15px;">套用篩選</button>
+                    </form>
+
                     <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>預約編號</th> <th>預約會員身分</th>
                                 <th>目標塔位</th>
                                 <th>預約排程時間</th>
-                                <th>排他性配置車位</th>
+                                <th>排他車位</th>
                                 <th>當前狀態</th>
                                 <th>管理操作</th>
                             </tr>
                         </thead>
                         <tbody id="reservationTableBody">
-                            </tbody>
+                        </tbody>
                     </table>
                 </section>
             </div>
