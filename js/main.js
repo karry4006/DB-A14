@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 annContainer.innerHTML = `
                     <div style="text-align: center; padding: 3rem; background: #fff; border-radius: 8px; color: red;">
                         <h3>系統異常</h3>
-                        <p>無法載入公告列表，請確認 API 服務是否啟動。</p>
+                        <p>無法載入公告列表，請確認 API 服務是否開啟。</p>
                     </div>
                 `;
             });
@@ -103,12 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (publicRegisterForm) {
         publicRegisterForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            // 依據 A14 API 規格表，註冊傳入的 Key 為 id_number
+            // 對齊同學 SQL 的 id_card_num 欄位
             const payload = {
                 account: document.getElementById("regAccount").value,
                 password: document.getElementById("regPassword").value,
                 name: document.getElementById("regName").value,
-                id_number: document.getElementById("regIdNumber").value
+                id_card_num: document.getElementById("regIdNumber").value
             };
 
             fetch(`${API_BASE_URL}/users`, {
@@ -138,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const account = document.getElementById("loginAccount").value;
             const password = document.getElementById("loginPassword").value;
 
-            // 呼叫登入 API
             fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -196,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // 預設載入
+        // 預設載入名下資料
         loadMemberSlots(userId);
 
         // 預約實體祭拜 (UC-03)
@@ -204,13 +203,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if(reserveForm) {
             reserveForm.addEventListener("submit", (e) => {
                 e.preventDefault();
-                // 依據 A14 API 規格表，人數參數名為 people_count
+                // 【核心修改】精準對齊同學 SQL 的 RESERVATION 欄位 amount_of_people
                 const payload = {
                     user_id: parseInt(userId),
                     slot_id: parseInt(document.getElementById("reserveSlotId").value),
                     reserve_date: document.getElementById("reserveDate").value,
                     time_slot: document.getElementById("reserveTime").value,
-                    people_count: parseInt(document.getElementById("reservePeople").value)
+                    amount_of_people: parseInt(document.getElementById("reservePeople").value)
                 };
 
                 fetch(`${API_BASE_URL}/reservations`, {
@@ -223,12 +222,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     return res.json();
                 })
                 .then(data => {
-                    alert(`預約排程已成功登錄！系統已排他性配置車位號碼: ${data.parking_spot_id}`);
+                    alert(`預約排程已成功登錄！系統已配置車位號碼: ${data.parking_spot_id ? data.parking_spot_id : '無'}`);
                     reserveForm.reset();
                 })
                 .catch(err => {
                     console.error(err);
-                    alert("預約失敗：該時段或塔位可能存在排程衝突，請修正後重試。");
+                    alert("預約失敗：該時段或塔位可能存在排程衝突，請更換時間重試。");
                 });
             });
         }
@@ -238,7 +237,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if(messageForm) {
             messageForm.addEventListener("submit", (e) => {
                 e.preventDefault();
+                // 對齊同學 SQL 的 MESSAGE 表欄位名稱（member_id, deceased_id）
                 const payload = {
+                    member_id: parseInt(userId),
                     deceased_id: parseInt(document.getElementById("msgDeceasedId").value),
                     item_type: document.getElementById("msgItem").value,
                     content: document.getElementById("msgContent").value
@@ -259,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch(err => {
                     console.error(err);
-                    alert("留言失敗：請確認是否已選擇親友對象。");
+                    alert("留言失敗：請確認是否已選擇正確的親友對象。");
                 });
             });
         }
@@ -267,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// 獲取名下塔位與親友 (UC-07)
+// 獲取名下塔位與已故親友關係 (UC-07)
 function loadMemberSlots(userId) {
     const tbody = document.getElementById("memberSlotsBody");
     const deceasedSelect = document.getElementById("msgDeceasedId");
@@ -280,7 +281,6 @@ function loadMemberSlots(userId) {
             return res.json();
         })
         .then(data => {
-            // 處理塔位表格
             if (tbody) {
                 tbody.innerHTML = "";
                 if(!data.slots || data.slots.length === 0) {
@@ -298,7 +298,6 @@ function loadMemberSlots(userId) {
                 }
             }
 
-            // 處理親友下拉選單
             if (deceasedSelect) {
                 deceasedSelect.innerHTML = `<option value="">請選擇追思對象...</option>`;
                 if (data.deceased && data.deceased.length > 0) {
