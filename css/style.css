@@ -236,3 +236,261 @@ footer {
     color: var(--white);
     text-align: center;
 }
+
+/* ==========================================================================
+   管理員後台 (admin.html)
+   ========================================================================== */
+.admin-container {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+}
+.admin-sidebar {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 2rem 1rem;
+}
+.admin-sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    border-bottom: 1px solid #777;
+    padding-bottom: 1rem;
+}
+.admin-nav {
+    list-style: none;
+}
+.admin-nav li {
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.admin-nav li:hover, .admin-nav li.active {
+    background-color: var(--primary-color);
+}
+.admin-main {
+    padding: 2rem;
+    background-color: #f9f9f9;
+}
+.mgmt-section {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+.mgmt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 2rem;
+}
+.stats-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-left: 5px solid var(--primary-color);
+    text-align: center;
+}
+.stats-card h3 {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+.stats-card .number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.admin-table th, .admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.admin-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   園區公告 (announcements.html)
+   ========================================================================== */
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.page-header h1 {
+    color: var(--secondary-color);
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+.page-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-color);
+}
+.ann-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.ann-item {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ==========================================================================
+   會員登入/註冊 (auth.html)
+   ========================================================================== */
+.auth-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.auth-tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #eee;
+}
+.auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+.auth-tab.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.auth-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.auth-btn:hover {
+    background: var(--primary-color);
+}
+
+/* ==========================================================================
+   會員後台 (member.html)
+   ========================================================================== */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+    padding: 2rem 5%;
+}
+.sidebar {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    height: fit-content;
+}
+.sidebar ul {
+    list-style: none;
+}
+.sidebar li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+.sidebar li:hover {
+    color: var(--primary-color);
+}
+.content-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    min-height: 400px;
+}
+.data-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+.data-list td, .data-list th {
+    padding: 12px;
+    border: 1px solid #eee;
+}
+.status-paid {
+    color: green;
+    font-weight: bold;
+}
+.status-unpaid {
+    color: red;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   塔位查詢 (slots.html)
+   ========================================================================== */
+.filter-section {
+    padding: 2rem 5%;
+    background: #fff;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.result-section {
+    padding: 0;
+}
+.slot-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.slot-table th, .slot-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+.slot-table th {
+    background-color: var(--primary-color);
+    color: white;
+}

@@ -5,56 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>會員登入/註冊 - 現代化靈骨塔管理系統</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .auth-container {
-            max-width: 400px;
-            margin: 2rem auto;
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #eee;
-        }
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            color: var(--secondary-color);
-        }
-        .auth-tab.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-        }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .auth-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .auth-btn:hover {
-            background: var(--primary-color);
-        }
-    </style>
 </head>
 <body>
 
@@ -84,8 +34,8 @@
         <main class="content-area">
             <section class="auth-container">
                 <div class="auth-tabs">
-                    <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">會員登入</div>
-                    <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">申請註冊</div>
+                    <div class="auth-tab active" id="tabLogin">會員登入</div>
+                    <div class="auth-tab" id="tabRegister">申請註冊</div>
                 </div>
 
                 <form id="publicLoginForm">
@@ -124,21 +74,5 @@
     </div>
 
     <script src="js/main.js"></script>
-    <script>
-        function switchTab(tab) {
-            document.getElementById('tabLogin').classList.remove('active');
-            document.getElementById('tabRegister').classList.remove('active');
-            document.getElementById('publicLoginForm').style.display = 'none';
-            document.getElementById('publicRegisterForm').style.display = 'none';
-
-            if (tab === 'login') {
-                document.getElementById('tabLogin').classList.add('active');
-                document.getElementById('publicLoginForm').style.display = 'block';
-            } else {
-                document.getElementById('tabRegister').classList.add('active');
-                document.getElementById('publicRegisterForm').style.display = 'block';
-            }
-        }
-    </script>
 </body>
 </html>

@@ -4,6 +4,39 @@ const API_BASE_URL = 'http://localhost:5000';
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =============================================================
+       0. 會員登入/註冊分頁切換 (auth.html)
+       ============================================================= */
+    function switchTab(tab) {
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const publicLoginForm = document.getElementById('publicLoginForm');
+        const publicRegisterForm = document.getElementById('publicRegisterForm');
+
+        if (tabLogin && tabRegister && publicLoginForm && publicRegisterForm) {
+            tabLogin.classList.remove('active');
+            tabRegister.classList.remove('active');
+            publicLoginForm.style.display = 'none';
+            publicRegisterForm.style.display = 'none';
+
+            if (tab === 'login') {
+                tabLogin.classList.add('active');
+                publicLoginForm.style.display = 'block';
+            } else {
+                tabRegister.classList.add('active');
+                publicRegisterForm.style.display = 'block';
+            }
+        }
+    }
+
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    if (tabLogin && tabRegister) {
+        tabLogin.addEventListener('click', () => switchTab('login'));
+        tabRegister.addEventListener('click', () => switchTab('register'));
+    }
+
+
+    /* =============================================================
        1. 載入園區公告 (announcements.html) (UC-10)
     ============================================================= */
     const annContainer = document.getElementById("announcementListContainer");
