@@ -196,11 +196,19 @@ def get_user_slots(user_id):
 @app.route('/bills', methods=['GET'])
 def get_bills():
     user_id = request.args.get('user_id')
+    year = request.args.get('year')
+    
     conn = get_db_connection()
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM billing WHERE member_id = %s"
-        cursor.execute(query, (user_id,))
+        params = [user_id]
+        
+        if year:
+            query += " AND bill_year = %s"
+            params.append(year)
+            
+        cursor.execute(query, params)
         bills = cursor.fetchall()
         for bill in bills:
             bill['due_date'] = bill['due_date'].strftime('%Y-%m-%d')

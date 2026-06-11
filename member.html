@@ -121,14 +121,20 @@
             <div id="memberBillsSection" class="content-section" style="display: none;">
 
                 <h2>管理費應繳帳單總額</h2>
+
+                <div class="search-bar" style="margin-top: 1rem; margin-bottom: 1rem; display: flex; gap: 10px; align-items: center;">
+                    <label for="billYearInput">年份搜尋：</label>
+                    <input type="number" id="billYearInput" placeholder="輸入年份 (例如: 2026)" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                    <button id="searchBillBtn" class="btn btn-primary" style="padding: 8px 20px; margin: 0;">搜尋</button>
+                </div>
+
                 <table class="data-list">
                     <thead>
                         <tr>
                             <th>費用年度</th>
-                            <th>應繳應付金額</th>
+                            <th>應繳金額</th>
                             <th>繳費截止日期</th>
-                            <th>目前帳務狀態</th>
-                            <th>線上沖銷作業</th>
+                            <th>繳費狀態</th>
                         </tr>
                     </thead>
                     <tbody id="memberBillsBody">

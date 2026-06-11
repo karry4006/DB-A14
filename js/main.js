@@ -228,6 +228,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+        // 綁定帳單年份搜尋按鈕
+        const searchBillBtn = document.getElementById("searchBillBtn");
+        if (searchBillBtn) {
+            searchBillBtn.addEventListener("click", () => {
+                const year = document.getElementById("billYearInput").value;
+                loadMemberBills(userId, year);
+            });
+        }
+
         // 預設載入名下資料
         loadMemberSlots(userId);
 
@@ -416,11 +425,16 @@ function loadMemberSlots(userId) {
 }
 
 // 獲取管理費帳單 (UC-06)
-function loadMemberBills(userId) {
+function loadMemberBills(userId, year = '') {
     const tbody = document.getElementById("memberBillsBody");
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">帳務關聯表檢索中...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">帳務關聯表檢索中...</td></tr>`;
 
-    fetch(`${API_BASE_URL}/bills?user_id=${userId}`)
+    let url = `${API_BASE_URL}/bills?user_id=${userId}`;
+    if (year) {
+        url += `&year=${year}`;
+    }
+
+    fetch(url)
         .then(res => {
             if (!res.ok) throw new Error("讀取帳單失敗");
             return res.json();
@@ -428,23 +442,26 @@ function loadMemberBills(userId) {
         .then(data => {
             tbody.innerHTML = "";
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">目前無未清償或應繳之管理費帳單。</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">查無符合年份或目前無應繳之管理費帳單。</td></tr>`;
                 return;
             }
             data.forEach(bill => {
+                // 優化狀態顯示：已繳 -> 已繳費, 未繳 -> 未繳費
+                const statusText = bill.status === '已繳' ? '已繳費' : '未繳費';
+                const statusClass = bill.status === '已繳' ? 'status-paid' : 'status-unpaid';
+
                 tbody.innerHTML += `
                     <tr>
                         <td>${bill.bill_year} 年度</td>
                         <td>$${bill.amount.toLocaleString()}</td>
                         <td>${bill.due_date}</td>
-                        <td><span class="badge">${bill.status}</span></td>
-                        <td>${bill.status === '未繳' ? '<button style="cursor:pointer; font-weight:bold;">線上核銷</button>' : '已沖銷'}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
                     </tr>
                 `;
             });
         })
         .catch(err => {
             console.error(err);
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">通訊中斷：無法載入應繳帳單。</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">通訊中斷：無法載入應繳帳單。</td></tr>`;
         });
 }
