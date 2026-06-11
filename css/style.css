@@ -490,7 +490,142 @@ footer {
     padding: 12px;
     text-align: left;
 }
-.slot-table th {
-    background-color: var(--primary-color);
-    color: white;
-}
+/* ==========================================================================
+   數位祭拜與追思牆 (新增功能)
+   ========================================================================== */
+
+/* 祭拜完成全螢幕動畫遮罩 */
+.worship-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
+    display: none; /* 預設隱藏 */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.worship-overlay.active {
+    display: flex;
+}
+
+.worship-animation-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    animation: pulseLight 2s infinite ease-in-out;
+}
+
+.worship-overlay h2 {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+}
+
+.worship-overlay p {
+    font-size: 1.4rem;
+    color: #666;
+}
+
+@keyframes pulseLight {
+    0% { transform: scale(1); opacity: 0.8; filter: drop-shadow(0 0 5px var(--primary-color)); }
+    50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 25px var(--primary-color)); }
+    100% { transform: scale(1); opacity: 0.8; filter: drop-shadow(0 0 5px var(--primary-color)); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 動態追思牆樣式 */
+.memorial-wall-container {
+    margin-top: 3rem;
+    border-top: 2px dashed #ddd;
+    padding-top: 2rem;
+}
+
+.memorial-wall-title {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.memorial-wall-title::before {
+    content: "🕯️";
+}
+
+.memorial-board {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.memorial-card {
+    background: #fffaf0; /* 暖白底色，對眼睛較溫和 */
+    border: 1px solid #e0d0b0;
+    border-left: 8px solid var(--primary-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    animation: slideInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+.memorial-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.memorial-card-name {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--secondary-color);
+}
+
+.memorial-card-item {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.memorial-card-content {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #444;
+}
+
+.memorial-card-time {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #999;
+    text-align: right;
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* 針對長者優化的按鈕點擊區域 */
+.btn-primary {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+

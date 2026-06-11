@@ -270,10 +270,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if(messageForm) {
             messageForm.addEventListener("submit", (e) => {
                 e.preventDefault();
-                // 對齊同學 SQL 的 MESSAGE 表欄位名稱（member_id, deceased_id）
+                
+                const deceasedSelect = document.getElementById("msgDeceasedId");
+                const deceasedName = deceasedSelect.options[deceasedSelect.selectedIndex].text;
+                
                 const payload = {
                     member_id: parseInt(userId),
-                    deceased_id: parseInt(document.getElementById("msgDeceasedId").value),
+                    deceased_id: parseInt(deceasedSelect.value),
                     item_type: document.getElementById("msgItem").value,
                     content: document.getElementById("msgContent").value
                 };
@@ -288,7 +291,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     return res.json();
                 })
                 .then(data => {
-                    alert('數位追思紀錄已成功寫入線上追思牆資料表。');
+                    // 1. 觸發祭拜完成動畫
+                    const overlay = document.getElementById('worshipOverlay');
+                    if(overlay) overlay.classList.add('active');
+
+                    // 2. 即時更新追思牆
+                    addMessageToBoard({
+                        name: deceasedName,
+                        item: payload.item_type,
+                        content: payload.content,
+                        time: new Date().toLocaleString()
+                    });
+
                     messageForm.reset();
                 })
                 .catch(err => {
@@ -297,9 +311,62 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
         }
+
+        // 預設載入追思牆
+        loadMemorialMessages();
     }
 
 });
+
+/**
+ * 將追思訊息渲染至追思牆 (動態留言板)
+ * @param {Object} data - 包含姓名、祭品、內容與時間的物件
+ */
+function addMessageToBoard(data) {
+    const board = document.getElementById("memorialBoard");
+    if (!board) return;
+
+    // 如果是第一條留言，移除「目前尚無紀錄」的文字
+    if (board.querySelector('p')) {
+        board.innerHTML = "";
+    }
+
+    const card = document.createElement("div");
+    card.className = "memorial-card";
+    card.style.opacity = "0"; // 初始透明以觸發 CSS 動畫
+
+    card.innerHTML = `
+        <div class="memorial-card-header">
+            <span class="memorial-card-name">致：${data.name}</span>
+            <span class="memorial-card-item">${data.item !== '無' ? '獻上' + data.item : '誠心追思'}</span>
+        </div>
+        <div class="memorial-card-content">${data.content}</div>
+        <small class="memorial-card-time">${data.time}</small>
+    `;
+
+    // 插入到最前面，讓最新的思念顯示在最上方
+    board.insertBefore(card, board.firstChild);
+    
+    // 觸發動畫
+    setTimeout(() => card.style.opacity = "1", 50);
+}
+
+/**
+ * 模擬從 API 載入歷史追思紀錄 (UC-05 延伸)
+ */
+function loadMemorialMessages() {
+    // 實務上應從 API 獲取，此處示範前端動態生成的擴充性
+    const board = document.getElementById("memorialBoard");
+    if(!board) return;
+
+    // 模擬一些既有的追思紀錄，增加畫面豐富度
+    const demoMessages = [
+        { name: "王老先生", item: "鮮花", content: "父親，家裡的桔子樹開花了，我們都很想您。", time: "2026/06/10 下午 2:30:15" },
+        { name: "李奶奶", item: "水果", content: "端午節快到了，今年我們會準備您最愛的豆沙粽。", time: "2026/06/09 上午 10:15:00" }
+    ];
+
+    demoMessages.forEach(msg => addMessageToBoard(msg));
+}
 
 // 獲取名下塔位與已故親友關係 (UC-07)
 function loadMemberSlots(userId) {

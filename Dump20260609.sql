@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '023ed239-189e-11f1-8fb8-025045249085:1-77';
+-- SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '023ed239-189e-11f1-8fb8-025045249085:1-77';
 
 --
 -- Table structure for table `announcement`

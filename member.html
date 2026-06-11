@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>會員後台 - 現代化靈骨塔管理系統</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <header>
@@ -43,16 +45,18 @@
                         </tr>
                     </thead>
                     <tbody id="memberSlotsBody">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
             <div id="reserveSection" class="content-section" style="display: none;">
                 <h2>預約實體祭拜排程</h2>
-                <form id="reserveForm" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+                <form id="reserveForm"
+                    style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
                     <div>
                         <label style="display: block; margin-bottom: 5px;">選擇名下塔位編號：</label>
-                        <input type="number" id="reserveSlotId" placeholder="例如: 101" required style="width: 100%; padding: 8px;">
+                        <input type="number" id="reserveSlotId" placeholder="例如: 101" required
+                            style="width: 100%; padding: 8px;">
                     </div>
                     <div>
                         <label style="display: block; margin-bottom: 5px;">預約祭拜日期：</label>
@@ -68,15 +72,18 @@
                     </div>
                     <div>
                         <label style="display: block; margin-bottom: 5px;">預計隨行人數：</label>
-                        <input type="number" id="reservePeople" min="1" value="1" required style="width: 100%; padding: 8px;">
+                        <input type="number" id="reservePeople" min="1" value="1" required
+                            style="width: 100%; padding: 8px;">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: fit-content; margin-top: 10px;">提交排程預約</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: fit-content; margin-top: 10px;">提交排程預約</button>
                 </form>
             </div>
 
             <div id="messageSection" class="content-section" style="display: none;">
                 <h2>線上數位追思與留言</h2>
-                <form id="messageForm" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+                <form id="messageForm"
+                    style="margin-top: 1rem; display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
                     <div>
                         <label style="display: block; margin-bottom: 5px;">追思對象 (已故親友)：</label>
                         <select id="msgDeceasedId" required style="width: 100%; padding: 8px;">
@@ -94,13 +101,25 @@
                     </div>
                     <div>
                         <label style="display: block; margin-bottom: 5px;">留言內容：</label>
-                        <textarea id="msgContent" rows="4" placeholder="請輸入您對先人的思念寄語..." required style="width: 100%; padding: 8px; resize: vertical;"></textarea>
+                        <textarea id="msgContent" rows="4" placeholder="請輸入您對先人的思念寄語..." required
+                            style="width: 100%; padding: 8px; resize: vertical;"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: fit-content; margin-top: 10px;">送出追思</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: fit-content; margin-top: 10px;">送出追思</button>
                 </form>
+
+                <!-- 新增：動態追思牆 / 留言板 -->
+                <div class="memorial-wall-container">
+                    <h3 class="memorial-wall-title">近期追思紀錄</h3>
+                    <div id="memorialBoard" class="memorial-board">
+                        <!-- 動態留言將在此處生成 -->
+                        <p style="color: #999; text-align: center; padding: 2rem;">目前尚無公開追思紀錄，您送出的思念將會顯示於此。</p>
+                    </div>
+                </div>
             </div>
 
             <div id="memberBillsSection" class="content-section" style="display: none;">
+
                 <h2>管理費應繳帳單總額</h2>
                 <table class="data-list">
                     <thead>
@@ -113,12 +132,21 @@
                         </tr>
                     </thead>
                     <tbody id="memberBillsBody">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </section>
     </main>
 
+    <!-- 祭拜完成動畫遮罩 -->
+    <div id="worshipOverlay" class="worship-overlay">
+        <div class="worship-animation-icon">✨</div>
+        <h2>心意已達．福澤長存</h2>
+        <p>您的追思留言與祭品已成功傳達至先人席位</p>
+        <button class="btn btn-primary" style="margin-top: 2rem;" onclick="document.getElementById('worshipOverlay').classList.remove('active')">確認</button>
+    </div>
+
     <script src="js/main.js"></script>
 </body>
+
 </html>

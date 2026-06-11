@@ -13,7 +13,7 @@ db_config = {
     'host': '127.0.0.1',
     'database': 'columbarium_db',
     'user': 'root',       # 預設通常是 root
-    'password': 'your_password', # 請輸入您的 MySQL 密碼
+    'password': '', # 請輸入您的 MySQL 密碼
     'charset': 'utf8mb4'
 }
 
