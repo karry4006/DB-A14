@@ -628,4 +628,151 @@ footer {
     padding: 15px 40px;
     font-size: 1.1rem;
 }
-
+
+/* ==========================================================================
+   自訂高級網頁彈窗 (Custom Modal Alert) - 需求二
+   ========================================================================== */
+.custom-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(3px);
+}
+
+.custom-alert-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-alert-box {
+    background: #fff;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    transform: translateY(-30px);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    border-top: 6px solid var(--primary-color);
+}
+
+.custom-alert-overlay.active .custom-alert-box {
+    transform: translateY(0);
+}
+
+.custom-alert-header {
+    background: #fdfdfd;
+    padding: 18px 25px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.custom-alert-header .icon {
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 2px var(--primary-color));
+}
+
+.custom-alert-header .title {
+    font-weight: bold;
+    color: var(--secondary-color);
+    letter-spacing: 1.5px;
+    font-size: 1.1rem;
+}
+
+.custom-alert-body {
+    padding: 35px 25px;
+    color: #444;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    text-align: center;
+    font-weight: 500;
+}
+
+.custom-alert-footer {
+    padding: 18px 25px;
+    text-align: right;
+    background: #fcfcfc;
+    border-top: 1px solid #f0f0f0;
+}
+
+.custom-alert-btn {
+    background: var(--secondary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.custom-alert-btn:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+}
+
+
+/* ==========================================================================
+   會員登入狀態導覽列樣式 (Member Nav Styles) - 需求一
+   ========================================================================== */
+.nav-member-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 20px;
+    padding: 5px 12px;
+    background: rgba(212, 175, 55, 0.05);
+    border-radius: 50px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.nav-welcome-text {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.nav-welcome-text b {
+    color: var(--primary-color);
+}
+
+.nav-member-link {
+    font-weight: bold;
+    color: var(--secondary-color) !important;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-member-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.nav-logout-btn {
+    color: #d9534f !important;
+    font-size: 0.9rem;
+    padding: 2px 8px;
+    border: 1px solid #d9534f;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.nav-logout-btn:hover {
+    background: #d9534f;
+    color: #fff !important;
+}
+

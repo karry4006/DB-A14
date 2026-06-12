@@ -1,4 +1,36 @@
 // js/admin.js
+
+/* =============================================================
+   【需求二】自訂高級網頁彈窗 - 覆寫全域 alert
+   ============================================================= */
+(function() {
+    window.alert = function(message) {
+        let overlay = document.getElementById('customAlertOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'customAlertOverlay';
+            overlay.className = 'custom-alert-overlay';
+            overlay.innerHTML = `
+                <div class="custom-alert-box">
+                    <div class="custom-alert-header">
+                        <span class="icon">📜</span>
+                        <span class="title">系統管理提示</span>
+                    </div>
+                    <div class="custom-alert-body" id="customAlertMessage"></div>
+                    <div class="custom-alert-footer">
+                        <button class="custom-alert-btn" id="customAlertBtn">確 定</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            document.getElementById('customAlertBtn').onclick = () => overlay.classList.remove('active');
+            overlay.onclick = (e) => { if(e.target === overlay) overlay.classList.remove('active'); };
+        }
+        document.getElementById('customAlertMessage').innerText = message;
+        overlay.classList.add('active');
+    };
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
     const API_BASE_URL = 'http://localhost:5000';
 

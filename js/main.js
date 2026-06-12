@@ -1,7 +1,81 @@
 // js/main.js
 const API_BASE_URL = 'http://localhost:5000';
 
+/* =============================================================
+   【需求二】自訂高級網頁彈窗 - 覆寫全域 alert
+   ============================================================= */
+(function() {
+    window.alert = function(message) {
+        let overlay = document.getElementById('customAlertOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'customAlertOverlay';
+            overlay.className = 'custom-alert-overlay';
+            overlay.innerHTML = `
+                <div class="custom-alert-box">
+                    <div class="custom-alert-header">
+                        <span class="icon">📜</span>
+                        <span class="title">系統提示</span>
+                    </div>
+                    <div class="custom-alert-body" id="customAlertMessage"></div>
+                    <div class="custom-alert-footer">
+                        <button class="custom-alert-btn" id="customAlertBtn">確 定</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            document.getElementById('customAlertBtn').onclick = () => overlay.classList.remove('active');
+            // 點擊遮罩也可關閉
+            overlay.onclick = (e) => { if(e.target === overlay) overlay.classList.remove('active'); };
+        }
+        document.getElementById('customAlertMessage').innerText = message;
+        overlay.classList.add('active');
+    };
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
+
+    /* =============================================================
+       【需求一】會員狀態維持邏輯 & 導覽列動態切換
+       ============================================================= */
+    const initMemberStatus = () => {
+        const memberName = localStorage.getItem("memberUserName");
+        const navUl = document.querySelector('header nav ul');
+
+        // 1. 防呆機制：已登入者進入 auth.html 自動導向會員中心
+        if (window.location.pathname.endsWith("auth.html") && memberName) {
+            window.location.href = "member.html";
+            return;
+        }
+
+        // 2. 導覽列動態更新
+        if (navUl && memberName) {
+            // 尋找目前的「會員登入」或「登出」項目
+            const navItems = Array.from(navUl.querySelectorAll('li'));
+            const loginItem = navItems.find(li => li.innerText.includes("會員登入") || li.innerText.includes("登出"));
+            
+            if (loginItem) {
+                // 使用自訂樣式包裝，並確保排在最後
+                loginItem.innerHTML = `
+                    <div class="nav-member-info">
+                        <span class="nav-welcome-text">歡迎，<b>${memberName}</b></span>
+                        <a href="member.html" class="nav-member-link">會員中心</a>
+                        <a href="#" id="globalLogoutBtn" class="nav-logout-btn">登出</a>
+                    </div>
+                `;
+
+                // 3. 登出邏輯
+                document.getElementById('globalLogoutBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem("memberUserId");
+                    localStorage.removeItem("memberUserName");
+                    alert("您已成功安全登出，即將回到首頁。");
+                    setTimeout(() => { window.location.href = "index.html"; }, 1000);
+                });
+            }
+        }
+    };
+    initMemberStatus();
 
     /* =============================================================
        0. 會員登入/註冊分頁切換 (auth.html)
