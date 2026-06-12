@@ -16,6 +16,11 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # 新增：強制連線使用 HTTPS (Azure 安全設定)
 app.config['PREFERRED_URL_SCHEME'] = 'https'
 
+# 新增：根路由，讓訪問網址時直接顯示首頁
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
 # 資料庫連線配置 (串接 Azure 環境變數與 SSL)
 db_config = {
     'host': os.environ.get('DB_HOST', '127.0.0.1'),
