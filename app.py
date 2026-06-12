@@ -1,11 +1,18 @@
 import datetime
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
 
-app = Flask(__name__)
+# 修改：設定根目錄為靜態資料夾，方便 Azure 讀取 index.html, css, js
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # 允許跨網域請求
+
+# 新增：根路由，讓訪問網址時直接顯示首頁
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 # 資料庫連線配置
 # 請根據您的 MySQL 設定修改以下參數
