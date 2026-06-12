@@ -14,13 +14,12 @@ CORS(app)  # 允許跨網域請求
 def index():
     return app.send_static_file('index.html')
 
-# 資料庫連線配置
-# 請根據您的 MySQL 設定修改以下參數
+# 資料庫連線配置 (串接 Azure 環境變數)
 db_config = {
-    'host': '127.0.0.1',
-    'database': 'columbarium_db',
-    'user': 'root',       # 預設通常是 root
-    'password': '', # 請輸入您的 MySQL 密碼
+    'host': os.environ.get('DB_HOST', '127.0.0.1'),
+    'database': os.environ.get('DB_NAME', 'columbarium_db'),
+    'user': os.environ.get('DB_USER', 'root'),
+    'password': os.environ.get('DB_PASSWORD', ''),
     'charset': 'utf8mb4'
 }
 
