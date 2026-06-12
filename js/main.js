@@ -1,5 +1,5 @@
 // js/main.js
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://mempark-dkfeg8e3f5cmdmcb.japaneast-01.azurewebsites.net';
 
 /* =============================================================
    【需求二】自訂高級網頁彈窗 - 覆寫全域 alert

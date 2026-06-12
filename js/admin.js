@@ -32,7 +32,7 @@
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
-    const API_BASE_URL = 'http://localhost:5000';
+    const API_BASE_URL = 'https://mempark-dkfeg8e3f5cmdmcb.japaneast-01.azurewebsites.net';
 
     /* -------------------------------------------------------------
        1. 處理管理員後台管理介面 (admin.html)
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 獲取營運摘要
 function fetchStats() {
-    const API_BASE_URL = 'http://localhost:5000';
+    const API_BASE_URL = 'https://mempark-dkfeg8e3f5cmdmcb.japaneast-01.azurewebsites.net';
     fetch(`${API_BASE_URL}/api/admin/stats`)
         .then(res => {
             if (!res.ok) throw new Error("讀取統計失敗");
@@ -232,7 +232,7 @@ function fetchStats() {
 
 // 獲取預約總表 (對齊 SQL 欄位屬性)
 function fetchReservations() {
-    const API_BASE_URL = 'http://localhost:5000';
+    const API_BASE_URL = 'https://mempark-dkfeg8e3f5cmdmcb.japaneast-01.azurewebsites.net';
     const tbody = document.getElementById("reservationTableBody");
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">後端資料嚴密調閱中...</td></tr>`;
 
