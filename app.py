@@ -4,23 +4,28 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
+from werkzeug.middleware.proxy_fix import ProxyFix # 新增：處理代理伺服器標頭
 
 # 修改：設定根目錄為靜態資料夾，方便 Azure 讀取 index.html, css, js
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # 允許跨網域請求
 
-# 新增：根路由，讓訪問網址時直接顯示首頁
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+# 新增：ProxyFix 讓 Flask 能正確識別 Azure 轉發的 HTTPS 標頭 (X-Forwarded-Proto)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# 資料庫連線配置 (串接 Azure 環境變數)
+# 新增：強制連線使用 HTTPS (Azure 安全設定)
+app.config['PREFERRED_URL_SCHEME'] = 'https'
+
+# 資料庫連線配置 (串接 Azure 環境變數與 SSL)
 db_config = {
     'host': os.environ.get('DB_HOST', '127.0.0.1'),
     'database': os.environ.get('DB_NAME', 'columbarium_db'),
     'user': os.environ.get('DB_USER', 'root'),
     'password': os.environ.get('DB_PASSWORD', ''),
-    'charset': 'utf8mb4'
+    'charset': 'utf8mb4',
+    # 新增 SSL 設定：Azure MySQL 彈性伺服器強制要求安全連線
+    'ssl_ca': os.environ.get('DB_SSL_CA'), # 可在 Azure 設定證書路徑，如 ./DigiCertGlobalRootG2.crt.pem
+    'ssl_verify_cert': True if os.environ.get('DB_SSL_CA') else False
 }
 
 def get_db_connection():
