@@ -21,16 +21,21 @@ app.config['PREFERRED_URL_SCHEME'] = 'https'
 def index():
     return app.send_static_file('index.html')
 
+# 取得 SSL 憑證路徑 (若環境變數未設定，且目錄下有 DigiCertGlobalRootG2.crt.pem 則自動採用)
+ssl_ca_path = os.environ.get('DB_SSL_CA')
+if not ssl_ca_path and os.path.exists('DigiCertGlobalRootG2.crt.pem'):
+    ssl_ca_path = './DigiCertGlobalRootG2.crt.pem'
+
 # 資料庫連線配置 (串接 Azure 環境變數與 SSL)
 db_config = {
     'host': os.environ.get('DB_HOST', '127.0.0.1'),
-    'database': os.environ.get('DB_NAME', 'columbarium_db'),
+    'database': os.environ.get('DB_NAME', 'mempark_db'),
     'user': os.environ.get('DB_USER', 'root'),
     'password': os.environ.get('DB_PASSWORD', ''),
     'charset': 'utf8mb4',
     # 新增 SSL 設定：Azure MySQL 彈性伺服器強制要求安全連線
-    'ssl_ca': os.environ.get('DB_SSL_CA'), # 可在 Azure 設定證書路徑，如 ./DigiCertGlobalRootG2.crt.pem
-    'ssl_verify_cert': True if os.environ.get('DB_SSL_CA') else False
+    'ssl_ca': ssl_ca_path,
+    'ssl_verify_cert': True if ssl_ca_path else False
 }
 
 def get_db_connection():
