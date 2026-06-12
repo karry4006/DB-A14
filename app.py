@@ -21,10 +21,13 @@ app.config['PREFERRED_URL_SCHEME'] = 'https'
 def index():
     return app.send_static_file('index.html')
 
-# 取得 SSL 憑證路徑 (若環境變數未設定，且目錄下有 DigiCertGlobalRootG2.crt.pem 則自動採用)
+# 取得 SSL 憑證路徑 (使用絕對路徑以避免 gunicorn 工作目錄不一致問題)
 ssl_ca_path = os.environ.get('DB_SSL_CA')
-if not ssl_ca_path and os.path.exists('DigiCertGlobalRootG2.crt.pem'):
-    ssl_ca_path = './DigiCertGlobalRootG2.crt.pem'
+if not ssl_ca_path:
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    local_ca = os.path.join(basedir, 'DigiCertGlobalRootG2.crt.pem')
+    if os.path.exists(local_ca):
+        ssl_ca_path = local_ca
 
 # 資料庫連線配置 (串接 Azure 環境變數與 SSL)
 db_config = {
@@ -35,7 +38,8 @@ db_config = {
     'charset': 'utf8mb4',
     # 新增 SSL 設定：Azure MySQL 彈性伺服器強制要求安全連線
     'ssl_ca': ssl_ca_path,
-    'ssl_verify_cert': True if ssl_ca_path else False
+    'ssl_verify_cert': True if ssl_ca_path else False,
+    'use_pure': True  # 強制使用純 Python 實作，避免 C 擴充元件引發 OpenSSL 錯誤
 }
 
 def get_db_connection():
